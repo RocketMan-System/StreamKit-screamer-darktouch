@@ -1,0 +1,66 @@
+name: Build and Release (Static)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛒 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🏷️ Get version from manifest.json
+        id: get_version
+        shell: bash
+        run: |
+          VERSION=$(jq -r .version manifest.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 🔍 Check if release exists
+        id: check_release
+        run: |
+          VERSION="v${{ steps.get_version.outputs.version }}"
+          echo "Checking for release $VERSION..."
+          if gh release view "$VERSION" 2>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Prepare main.zip
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          mkdir build
+          cp manifest.json build/
+          cp logo.* build/ 2>/dev/null || true
+          cp -r media build/ 2>/dev/null || true
+
+          cd build
+          zip -r ../main.zip .
+
+      - name: 📤 Create Release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          body: |
+            This extension can be installed using the following link:
+
+            streamkit://extensions/download/${{ github.repository }}
+
+            You can also install it from the application settings under the **Assets Manager** section by specifying the **Public ID**: `${{ github.repository }}`.
+          files: |
+            main.zip
+            manifest.json
+            logo.*
