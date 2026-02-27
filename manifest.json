@@ -1,13 +1,13 @@
 {
 	"name": {
-		"en": "StreamKit Effect Simple Template",
-		"ru": "Шаблон простого эффекта для StreamKit",
-		"ua": "Шаблон простого ефекту для StreamKit"
+		"en": "Touching Darkness",
+		"ru": "Касание темноты",
+		"ua": "Дотик темряви"
 	},
 	"description": {
-		"en": "StreamKit Effect Simple Template",
-		"ru": "Шаблон простого эффекта для StreamKit",
-		"ua": "Шаблон простого ефекту для StreamKit"
+		"en": "Sudden hello from a parallel world 😈",
+		"ru": "Внезапный привет из параллельного мира 😈",
+		"ua": "Раптовий привіт із паралельного світу 😈"
 	},
 	"author": "RocketMan",
 	"version": "1.0.0",
@@ -23,7 +23,6 @@
 	},
 	"settings": {
 		"lockSeconds": 3,
-		"volume": 70,
-		"defaultSeconds": 30
+		"volume": 50
 	}
 }
